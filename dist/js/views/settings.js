@@ -231,7 +231,24 @@ window.settingsView = {
     </div>`;
   },
 
-  init() {},
+  async init() {
+    // 从 PHP 加载服务器配置，并刷新表单
+    try {
+      const cfg = await api.loadServerConfig();
+      if (cfg && cfg.host) {
+        const h = document.getElementById('cfgHost');
+        const su = document.getElementById('cfgSmtp');
+        const iu = document.getElementById('cfgImap');
+        const sl = document.getElementById('cfgSsl');
+        const u  = document.getElementById('cfgUser');
+        if (h)  h.value  = cfg.host || '';
+        if (su) su.value = cfg.smtpPort || 465;
+        if (iu) iu.value = cfg.imapPort || 993;
+        if (sl) sl.checked = cfg.ssl !== false;
+        if (u)  u.value  = cfg.username || '';
+      }
+    } catch (e) { /* PHP 不可用，使用 localStorage */ }
+  },
 
   _switchSection(name, el) {
     document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
