@@ -56,7 +56,6 @@ class ImapClient {
         for ($i = $total; $i >= $start; $i--) {
             $header  = imap_headerinfo($this->conn, $i);
             $uid     = imap_uid($this->conn, $i);
-            $flags   = imap_fetchflags($this->conn, $uid, FT_UID);
 
             $from = $this->decodeHeader($header->from[0] ?? null);
             $to   = $this->decodeHeader($header->to[0]   ?? null);
@@ -65,8 +64,8 @@ class ImapClient {
                 'id'       => 'imap-' . $uid,
                 'uid'      => $uid,
                 'folder'   => strtolower($folder) === 'inbox' ? 'inbox' : 'sent',
-                'unread'   => !in_array('\\Seen', $flags),
-                'starred'  => in_array('\\Flagged', $flags),
+                'unread'   => ($header->Unseen  ?? '') === 'U',
+                'starred'  => ($header->Flagged ?? '') === 'F',
                 'from'     => $from['name'],
                 'fromEmail'=> $from['email'],
                 'to'       => $to['name'],
