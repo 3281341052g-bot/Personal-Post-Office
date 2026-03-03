@@ -53,8 +53,8 @@
     </form>
 
     <div class="login-demo-hint">
-      服务器模式：使用宝塔邮局账号和密码登录<br/>
-      本地演示：任意邮箱 + 任意密码均可
+      演示账号：<b>demo@postoffice.com</b> / <b>123456</b><br/>
+      或任意邮箱 + 任意密码均可登录
     </div>
   </div>
 
@@ -84,43 +84,37 @@
       document.getElementById('remember').checked = true;
     }
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const email    = document.getElementById('email').value.trim();
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const remember = document.getElementById('remember').checked;
-      const btn      = form.querySelector('.btn-login');
 
-      if (!email || !password) { errEl.textContent = '请填写邮箱和密码'; errEl.classList.add('show'); return; }
-      errEl.classList.remove('show');
-      btn.textContent = '登录中…';
-      btn.disabled = true;
-
-      const isServer = location.protocol !== 'file:';
-      try {
-        let user, token;
-        if (isServer) {
-          const res  = await fetch('./api/login.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ email, password }) });
-          const json = await res.json();
-          if (!json.ok) throw new Error(json.error || '邮箱或密码错误');
-          user  = json.data.user;
-          token = json.data.token;
-        } else {
-          const name = email.split('@')[0];
-          user  = { email, name: name.charAt(0).toUpperCase() + name.slice(1), avatar: name.charAt(0).toUpperCase() };
-          token = 'demo-' + btoa(email);
-        }
-        if (remember) localStorage.setItem('ppo_email', email);
-        else localStorage.removeItem('ppo_email');
-        localStorage.setItem('ppo_token', token);
-        localStorage.setItem('ppo_user', JSON.stringify({ ...user, loggedIn: true }));
-        window.location.href = 'app.html';
-      } catch (err) {
-        errEl.textContent = err.message || '登录失败，请重试';
+      if (!email || !password) {
         errEl.classList.add('show');
-        btn.textContent = '登录';
-        btn.disabled = false;
+        return;
       }
+
+      // 模拟登录（任意账号密码均可，或使用 demo 账号）
+      errEl.classList.remove('show');
+
+      if (remember) {
+        localStorage.setItem('ppo_email', email);
+      } else {
+        localStorage.removeItem('ppo_email');
+      }
+
+      // 保存用户信息
+      const userName = email.split('@')[0];
+      localStorage.setItem('ppo_user', JSON.stringify({
+        email,
+        name: userName.charAt(0).toUpperCase() + userName.slice(1),
+        avatar: userName.charAt(0).toUpperCase(),
+        loggedIn: true
+      }));
+
+      // 跳转到主系统
+      window.location.href = 'app.html';
     });
   </script>
 </body>
