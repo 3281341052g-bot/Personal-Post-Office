@@ -4,7 +4,7 @@
 
 /* ── GPU 加速 / 性能 ── */
 #viewContainer {
-  will-change: opacity, transform;
+  height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -15,15 +15,6 @@
 .contacts-body,
 .settings-body {
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-.nav-item,
-.message-item,
-.contact-card,
-.stat-card,
-.quick-btn,
-.btn {
-  will-change: transform;
 }
 
 /* ── 骨架屏 ── */

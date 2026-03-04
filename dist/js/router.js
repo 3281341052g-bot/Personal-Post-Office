@@ -26,6 +26,12 @@
   const container = document.getElementById('viewContainer');
   let _currentView = null;
 
+  // 只改 opacity/transform，不动其他属性
+  function setFade(el, opacity, y) {
+    el.style.opacity = opacity;
+    el.style.transform = y !== 0 ? 'translateY(' + y + 'px)' : '';
+  }
+
   function go(viewName) {
     const name = views[viewName] ? viewName : 'dashboard';
     window.location.hash = name;
@@ -45,14 +51,19 @@
 
     // 标题淡入
     const titleEl = document.getElementById('pageTitle');
-    titleEl.style.cssText = 'opacity:0;transform:translateY(-4px);transition:none';
+    titleEl.style.transition = 'none';
+    titleEl.style.opacity = '0';
+    titleEl.style.transform = 'translateY(-3px)';
     setTimeout(() => {
       titleEl.textContent = pageTitles[viewName] || viewName;
-      titleEl.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .2s ease,transform .2s ease';
-    }, 60);
+      titleEl.style.transition = 'opacity .18s ease, transform .18s ease';
+      titleEl.style.opacity = '1';
+      titleEl.style.transform = '';
+    }, 50);
 
-    // 内容淡出 → 渲染 → 淡入
-    container.style.cssText = 'opacity:0;transform:translateY(8px);transition:opacity .1s ease,transform .1s ease';
+    // 内容淡出
+    container.style.transition = 'opacity .1s ease, transform .1s ease';
+    setFade(container, 0, 6);
 
     setTimeout(() => {
       const view = views[viewName];
@@ -61,13 +72,15 @@
         view.init && view.init();
       }
       store.setState({ currentView: viewName });
-      // rAF 确保 DOM 已渲染再触发淡入
+
+      // 双 rAF 确保 DOM 绘制后再淡入
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          container.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .2s ease,transform .2s ease';
+          container.style.transition = 'opacity .2s ease, transform .2s ease';
+          setFade(container, 1, 0);
         });
       });
-    }, 110);
+    }, 105);
   }
 
   window.addEventListener('hashchange', () => {
