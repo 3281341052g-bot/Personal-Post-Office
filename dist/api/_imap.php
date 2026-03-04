@@ -152,11 +152,11 @@ class ImapClient {
             $type = (isset($structure->subtype) && strtolower($structure->subtype) === 'html') ? 'html' : 'plain';
             return ['body' => $body, 'type' => $type];
         }
-        // 多部分：优先 text/plain，其次 text/html
-        $plain = $this->extractPart($uid, $structure->parts, '', 'plain');
-        if ($plain !== null) return ['body' => $plain, 'type' => 'plain'];
+        // 多部分：优先 text/html，fallback text/plain
         $html  = $this->extractPart($uid, $structure->parts, '', 'html');
         if ($html  !== null) return ['body' => $html,  'type' => 'html'];
+        $plain = $this->extractPart($uid, $structure->parts, '', 'plain');
+        if ($plain !== null) return ['body' => $plain, 'type' => 'plain'];
         return ['body' => '', 'type' => 'plain'];
     }
 
