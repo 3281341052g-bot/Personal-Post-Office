@@ -1,71 +1,122 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>个人邮局 · 登录</title>
+  <title>个人邮局 Pro</title>
   <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/landing.css" />
   <link rel="stylesheet" href="styles/login.css" />
 </head>
-<body class="login-page">
 
-  <div class="login-logo">
-    <span class="logo-icon">✉️</span>
-    <div class="logo-name">个人邮局</div>
-    <div class="logo-tagline">Personal Post Office</div>
-  </div>
+<body class="landing-page">
 
-  <div class="login-card">
-    <h2>欢迎回来</h2>
-    <p class="login-sub">登录你的个人邮局账户</p>
+  <!-- Global Nav -->
+  <nav class="global-nav">
+    <div class="nav-content">
+      <div class="nav-logo" onclick="window.scrollTo(0, 0)">✉️ 个人邮局</div>
+      <div class="nav-links">
+      </div>
+      <button class="btn-login-nav" id="navLoginBtn">登录</button>
+    </div>
+  </nav>
 
-    <div class="login-error" id="loginError">邮箱或密码错误，请重试。</div>
+  <div class="ambient-glow"></div>
 
-    <form id="loginForm" autocomplete="on">
-      <div class="form-group">
-        <label class="form-label" for="email">邮箱地址</label>
-        <div class="input-wrap">
-          <span class="input-icon">✉</span>
-          <input class="input" type="email" id="email" name="email"
-            placeholder="your@example.com" required autocomplete="email" />
+  <!-- Hero Section -->
+  <section class="hero-section" id="overview">
+    <h1 class="hero-title">个人邮局 <span class="pro-text">Pro</span></h1>
+    <h2 class="hero-subtitle">超前，超凡，超酷。</h2>
+    <p class="hero-price">永久免费。重新定义属于你的邮件体验。</p>
+
+    <div class="hero-actions">
+      <button class="btn-buy" id="heroLoginBtn">立即开启</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2026 个人邮局 保留所有权.
+  </footer>
+
+  <!-- Login Modal overlay -->
+  <div class="login-modal-overlay" id="loginModal">
+    <button class="close-btn" id="closeModal">×</button>
+
+    <div class="login-card" style="margin: 0;">
+      <div class="login-header">
+        <span class="logo-icon">✉️</span>
+        <h2>登入个人邮局</h2>
+      </div>
+
+      <div class="login-error" id="loginError">邮箱或密码错误，请重试。</div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <div class="input-wrap">
+            <input class="input" type="email" id="email" name="email" placeholder="Apple ID 或邮箱" required
+              autocomplete="email" />
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label" for="password">密码</label>
-        <div class="input-wrap password-wrap">
-          <span class="input-icon">🔒</span>
-          <input class="input" type="password" id="password" name="password"
-            placeholder="请输入密码" required autocomplete="current-password" />
-          <span class="toggle-pw" id="togglePw" title="显示/隐藏密码">👁</span>
+        <div class="form-group" style="margin-bottom: 32px;">
+          <div class="input-wrap password-wrap">
+            <input class="input" type="password" id="password" name="password" placeholder="密码" required
+              autocomplete="current-password" />
+            <span class="toggle-pw" id="togglePw" title="显示/隐藏密码">👁</span>
+          </div>
         </div>
-      </div>
 
-      <div class="login-options">
-        <label class="checkbox-label">
-          <input type="checkbox" id="remember" name="remember" />
-          记住我
-        </label>
-        <a href="#" class="forgot-link">忘记密码？</a>
-      </div>
+        <button type="submit" class="btn-login">
+          继续
+        </button>
 
-      <button type="submit" class="btn btn-primary btn-login">登录</button>
-    </form>
-
-    <div class="login-demo-hint">
-      演示账号：<b>demo@postoffice.com</b> / <b>123456</b><br/>
-      或任意邮箱 + 任意密码均可登录
+        <div class="login-demo-hint">
+          <label class="checkbox-label" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
+            <input type="checkbox" id="remember" name="remember" /> 保持登录状态
+          </label>
+          <a href="#" class="forgot-link">忘记密码？</a><br><br>
+          演示账号：demo@apple.com / 123456
+        </div>
+      </form>
     </div>
   </div>
 
-  <div class="login-footer">
-    © 2026 个人邮局 &nbsp;·&nbsp;
-    <a href="#">隐私政策</a> &nbsp;·&nbsp;
-    <a href="#">服务条款</a>
-  </div>
-
   <script>
-    // 登录逻辑
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 60,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // 模态框逻辑
+    const modal = document.getElementById('loginModal');
+    const openBtns = [document.getElementById('navLoginBtn'), document.getElementById('heroLoginBtn')];
+    const closeBtn = document.getElementById('closeModal');
+
+    openBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal.classList.add('active');
+        // 当打开模态框时，禁止背景滚动
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    // 表单登录逻辑
     const form = document.getElementById('loginForm');
     const errEl = document.getElementById('loginError');
     const togglePw = document.getElementById('togglePw');
@@ -77,7 +128,6 @@
       togglePw.textContent = isText ? '👁' : '🙈';
     });
 
-    // 自动填充演示账号
     const savedEmail = localStorage.getItem('ppo_email');
     if (savedEmail) {
       document.getElementById('email').value = savedEmail;
@@ -95,7 +145,6 @@
         return;
       }
 
-      // 模拟登录（任意账号密码均可，或使用 demo 账号）
       errEl.classList.remove('show');
 
       if (remember) {
@@ -104,7 +153,6 @@
         localStorage.removeItem('ppo_email');
       }
 
-      // 保存用户信息
       const userName = email.split('@')[0];
       localStorage.setItem('ppo_user', JSON.stringify({
         email,
@@ -113,9 +161,10 @@
         loggedIn: true
       }));
 
-      // 跳转到主系统
+      // 跳转到内部系统 (App.html)
       window.location.href = 'app.html';
     });
   </script>
 </body>
+
 </html>
